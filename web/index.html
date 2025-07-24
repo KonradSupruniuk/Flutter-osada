@@ -2,12 +2,11 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Osada</title>
+  <title>Gra Osada</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f1f0e6;
-      margin: 0;
       padding: 20px;
       text-align: center;
     }
@@ -18,44 +17,108 @@
       display: inline-block;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    h1 {
-      margin-top: 0;
-    }
-    .level {
-      font-size: 24px;
-      margin: 20px 0;
-    }
-    button {
-      padding: 10px 20px;
+    .resource, .building {
+      margin: 10px 0;
       font-size: 18px;
-      border: none;
+    }
+    .building button {
+      margin-left: 10px;
+      padding: 6px 12px;
+      font-size: 14px;
       background-color: #4caf50;
       color: white;
-      border-radius: 5px;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #45a049;
+    .building button:hover {
+      background-color: #388e3c;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🛡️ Gra Osada</h1>
-    <div class="level">Poziom osady: <span id="level">1</span></div>
-    <button onclick="upgrade()">Rozbuduj osadę</button>
+    <h1>🏰 Gra Osada</h1>
+
+    <div class="resource">🌲 Drewno: <span id="wood">500</span></div>
+    <div class="resource">🪨 Kamień: <span id="stone">500</span></div>
+    <div class="resource">⛏️ Żelazo: <span id="iron">500</span></div>
+    <div class="resource">🌾 Żywność: <span id="food">500</span></div>
+    <div class="resource">👨‍🌾 Populacja: <span id="population">25</span></div>
+
+    <hr>
+
+    <div class="building">🏚️ Zrębisko (lvl <span id="zrebisko">0</span>)
+      <button onclick="build('zrebisko', 100, 50, 20)">Buduj</button>
+    </div>
+
+    <div class="building">⛏️ Skalodół (lvl <span id="skalodol">0</span>)
+      <button onclick="build('skalodol', 120, 60, 30)">Buduj</button>
+    </div>
+
+    <div class="building">🏗️ Rudnia (lvl <span id="rudnia">0</span>)
+      <button onclick="build('rudnia', 150, 100, 50)">Buduj</button>
+    </div>
+
+    <div class="building">🏘️ Osiedle (lvl <span id="osiedle">0</span>)
+      <button onclick="buildOsiedle()">Buduj</button>
+    </div>
   </div>
 
   <script>
-    let level = 1;
-    function upgrade() {
-      if (level < 20) {
-        level++;
-        document.getElementById('level').innerText = level;
-      } else {
-        alert("Osiągnąłeś maksymalny poziom osady!");
+    let resources = {
+      wood: 500,
+      stone: 500,
+      iron: 500,
+      food: 500,
+      population: 25
+    };
+
+    let buildings = {
+      zrebisko: 0,
+      skalodol: 0,
+      rudnia: 0,
+      osiedle: 0
+    };
+
+    function updateUI() {
+      for (let key in resources) {
+        document.getElementById(key).innerText = resources[key];
+      }
+      for (let key in buildings) {
+        document.getElementById(key).innerText = buildings[key];
       }
     }
+
+    function build(type, woodCost, stoneCost, ironCost) {
+      if (
+        resources.wood >= woodCost &&
+        resources.stone >= stoneCost &&
+        resources.iron >= ironCost
+      ) {
+        resources.wood -= woodCost;
+        resources.stone -= stoneCost;
+        resources.iron -= ironCost;
+        buildings[type]++;
+      } else {
+        alert("Nie masz wystarczającej ilości surowców!");
+      }
+      updateUI();
+    }
+
+    function buildOsiedle() {
+      let foodCost = 300;
+      if (resources.food >= foodCost) {
+        resources.food -= foodCost;
+        buildings.osiedle++;
+        resources.population += 25;
+      } else {
+        alert("Za mało żywności!");
+      }
+      updateUI();
+    }
+
+    updateUI();
   </script>
 </body>
 </html>
